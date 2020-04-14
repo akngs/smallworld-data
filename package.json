@@ -6,6 +6,7 @@
   "scripts": {
     "fetch": "node fetch.js",
     "cleanse": "node cleanse.js",
+    "cleanup": "rm data/raw-*.csv",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",

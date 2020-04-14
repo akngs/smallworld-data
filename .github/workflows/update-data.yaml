@@ -13,18 +13,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v1
-    - name: Use Node.js
-      uses: actions/setup-node@v1
-    - name: Fetch and commit
+    - uses: actions/setup-node@v1
+    - name: Fetch data
       run: |
         npm i
         npm run fetch
         npm run cleanse
-        git add data
-        git config --local user.email "action@github.com"
-        git config --local user.name "GitHub Action"
-        git commit -m 'Update data'
-    - name: Push changes
-      uses: ad-m/github-push-action@master
+    - name: Deploy
+      uses: peaceiris/actions-gh-pages@v3
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./data
