@@ -1,6 +1,5 @@
 # project
-data/
-!data/.nojekyll
+data/*.csv
 
 # nodejs
 node_modules/
