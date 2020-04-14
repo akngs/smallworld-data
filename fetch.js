@@ -5,48 +5,31 @@ const path = require('path')
 
 const WDQS_ENDPOINT = 'https://query.wikidata.org/bigdata/namespace/wdq/sparql'
 
-
 async function main() {
-  console.log('Running persons.sparql...')
-  const personsSparql = fs.readFileSync(
-    path.resolve(__dirname, 'persons.sparql'),
-    { encoding: 'utf-8' },
-  )
-  const persons = await query(personsSparql)
+  console.log('Running sparql queries...')
+  const [persons, relatives, relativesIndirect] = await Promise.all([
+    query(loadQuery('persons')),
+    query(loadQuery('relatives')),
+    query(loadQuery('relatives-indirect')),
+  ])
 
-  console.log('Running relatives.sparql...')
-  const relativesSparql = fs.readFileSync(
-    path.resolve(__dirname, 'relatives.sparql'),
-    { encoding: 'utf-8' },
-  )
-  const relatives = await query(relativesSparql)
+  console.log('Writing raw csvs...')
+  writeRawCsv('persons', persons)
+  writeRawCsv('relatives', relatives)
+  writeRawCsv('relatives-indirect', relativesIndirect)
+}
 
-  console.log('Running relatives-indirect.sparql...')
-  const relativesIndirectSparql = fs.readFileSync(
-    path.resolve(__dirname, 'relatives-indirect.sparql'),
-    { encoding: 'utf-8' },
-  )
-  const relativesIndirect = await query(relativesIndirectSparql)
+function loadQuery(name) {
+  return fs.readFileSync(path.resolve(__dirname, `${name}.sparql`), {
+    encoding: 'utf-8',
+  })
+}
 
-  console.log('Writing raw-persons.csv...')
+function writeRawCsv(name, content) {
   fs.writeFileSync(
-    path.resolve(__dirname, 'data', 'raw-persons.csv'),
-    persons,
+    path.resolve(__dirname, 'data', `raw-${name}.csv`),
+    content,
   )
-
-  console.log('Writing raw-relatives.csv...')
-  fs.writeFileSync(
-    path.resolve(__dirname, 'data', 'raw-relatives.csv'),
-    relatives,
-  )
-
-  console.log('Writing raw-relatives-indirect.csv...')
-  fs.writeFileSync(
-    path.resolve(__dirname, 'data', 'raw-relatives-indirect.csv'),
-    relativesIndirect,
-  )
-
-  console.log('Done!')
 }
 
 async function query(sparql) {
