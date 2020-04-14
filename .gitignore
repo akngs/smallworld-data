@@ -1,5 +1,5 @@
 # project
-data/*.csv
+data/
 
 # nodejs
 node_modules/

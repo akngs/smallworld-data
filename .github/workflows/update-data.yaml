@@ -16,6 +16,7 @@ jobs:
     - uses: actions/setup-node@v1
     - name: Fetch data
       run: |
+        mkdir -p data
         npm i
         npm run fetch
         npm run cleanse
